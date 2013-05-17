@@ -9,9 +9,17 @@
 	font-family: sans-serif;
 	font-weight: bold;
 	text-align: center;
+	white-space: nowrap;
 	width: 594px;
 	margin: 1em auto;
 	visibility: hidden;
+	overflow: hidden;
+}
+
+.spin-two-three.horizontal {
+	width: auto;
+	height: 1em;
+	background-color: yellow;
 }
 
 .spin-two-three.started {
@@ -19,9 +27,15 @@
 }
 
 .spinner {
-	height: 1em;
-	overflow: hidden;
 	position: relative;
+}
+
+.horizontal .spinner {
+	width: 1em;
+	height: 100%;
+	display: block;
+	float: left;
+	background-color: lime;
 }
 
 .slices {
@@ -29,16 +43,26 @@
 	white-space: nowrap;
 	overflow: hidden;
 	position: absolute;
+	top: 0;
 	left: 0;
+}
+
+.horizontal .slices {
+	white-space: pre-wrap;
 }
 
 .slice {
 	font-size: 16px;
 	font-size: 1rem;
-	display: inline-block;
 	width: 594px;
+	display: inline-block;
 	position: relative;
-	z-index: -1;
+}
+
+.horizontal .slice {
+	width: auto;
+	display: block;
+	background-color: red;
 }
 
 .slice img {

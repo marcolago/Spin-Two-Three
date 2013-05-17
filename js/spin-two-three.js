@@ -1,13 +1,15 @@
 function SpinTwoThree(element, classes) {
 	'use strict';
 
-	var spinTwoThree = element,
-		controlClasses = typeof classes === "string" ? [classes] : classes,
-		slots = [],
-		totalSlots = 0,
-		sliceWidth = 0,
-		spinsCompleted = 0,
-		currentId = NaN;
+	var spinTwoThree = element;
+	var controlClasses = typeof classes === "string" ? [classes] : classes;
+	var slots = [];
+	var totalSlots = 0;
+	var sliceSize = 0;
+	var spinsCompleted = 0;
+	var currentId = 0;
+	var firstSpinned = false;
+	var _isVertical = true;
 
 	// initialization
 	
@@ -20,7 +22,12 @@ function SpinTwoThree(element, classes) {
 		//
 		var slot = slots[0];
 		//
-		sliceWidth = parseInt(window.getComputedStyle(slot.getSlice(0)).width);
+		if (spinTwoThree.className.match(/\bhorizontal\b/) !== null) {
+			sliceSize = parseInt(window.getComputedStyle(slot.getSlice(0)).height);
+			_isVertical = false;
+		} else {
+			sliceSize = parseInt(window.getComputedStyle(slot.getSlice(0)).width);
+		}
 		totalSlots = slot.getSlices().length;
 		//
 		_addEventListener("click", parseClick, false);
@@ -30,8 +37,8 @@ function SpinTwoThree(element, classes) {
 	})();
 
 	function parseClick(e) {
-		var className = e.target.className,
-			enabled = false;
+		var className = e.target.className;
+		var enabled = false;
 		//
 		if (className.indexOf("spin-all") !== -1) {
 			enabled = true;
@@ -61,8 +68,12 @@ function SpinTwoThree(element, classes) {
 		}
 	}
 
-	function getLeft(el) {
-		return (isNaN(parseInt(el.style.left)) ? 0 : parseInt(el.style.left));
+	function getLimit(el) {
+		if (_isVertical) {
+			return (isNaN(parseInt(el.style.left)) ? 0 : parseInt(el.style.left));	
+		} else {
+			return (isNaN(parseInt(el.style.top)) ? 0 : parseInt(el.style.top));	
+		}
 	}
 
 	function toArray(collection) {
@@ -102,18 +113,18 @@ function SpinTwoThree(element, classes) {
 	}
 
 	function Slot(slices) {
-		var slot = slices,
-			slices = slot.querySelectorAll(".slice"),
-			slicesArray = toArray(slices),
-			_length = slicesArray.length,
-			stopped = true;
-		for (var i = 0; i < slicesArray.length; i++) {
-			slicesArray[i].index = i;
-		}
-		//
+		var slot = slices;
+		var slices = slot.querySelectorAll(".slice");
+		var slicesArray = toArray(slices);
+		var _length = slicesArray.length;
 		var animStatus = 0;
 		var delta = 0;
 		var maxSpeed = 100;
+		var stopped = true;
+		//
+		for (var i = 0; i < slicesArray.length; i++) {
+			slicesArray[i].index = i;
+		}
 
 		function _shuffle() {
 			shuffle(slicesArray);
@@ -121,7 +132,6 @@ function SpinTwoThree(element, classes) {
 		}
 
 		function _spin() {
-			console.log("_spin", stopped);
 			if (stopped === true) {
 				maxSpeed = Math.floor((Math.random() * 100) + 75);
 				stopped = false;
@@ -130,7 +140,6 @@ function SpinTwoThree(element, classes) {
 		}
 
 		function _stop() {
-			console.log("_stop");
 			stopped = true;
 		}
 
@@ -139,16 +148,28 @@ function SpinTwoThree(element, classes) {
 			//
 			if (delta !== 0)
 			{
-				slot.style.left = getLeft(slot) - delta + "px";
+				if (_isVertical) {
+					slot.style.left = getLimit(slot) - delta + "px";
+				} else {
+					slot.style.top = getLimit(slot) - delta + "px";
+				}
 			}
 			//
-			if (getLeft(slot) < -(sliceWidth * 2))
+			if (getLimit(slot) < -sliceSize)
 			{
-				var leftDelta = Math.abs(getLeft(slot)) - (sliceWidth * 2);
-				var toReorder = slicesArray.shift();
-				slicesArray.push(toReorder);
-				slot.appendChild(toReorder);
-				slot.style.left = -(sliceWidth + leftDelta) + "px";
+				var limitDelta = Math.abs(getLimit(slot)) % sliceSize;
+				var n = Math.floor(Math.abs(getLimit(slot)) / sliceSize);
+				var toReorderArray = slicesArray.splice(0, n);
+				for (var i = 0; i < toReorderArray.length; i++) {
+					var toReorder = toReorderArray[i];
+					slicesArray.push(toReorder);
+					slot.appendChild(toReorder);
+				}
+				if (_isVertical) {
+					slot.style.left = -limitDelta + "px";	
+				} else {
+					slot.style.top = -limitDelta + "px";
+				}
 			}
 			//
 			if(animStatus !== 2 && stopped !== true)
@@ -190,20 +211,28 @@ function SpinTwoThree(element, classes) {
 		}
 
 		function _gotoNearest() {
-			var l = "" + (-sliceWidth) + "px";
-			TweenLite.to(slot, 0.5, { left:l, ease:Cubic.easeInOut, onComplete: _reset });
+			var l = "0px";
+			if (_isVertical) {
+				TweenLite.to(slot, 0.5, { left:l, ease:Cubic.easeInOut, onComplete: _reset });
+			} else {
+				TweenLite.to(slot, 0.5, { top:l, ease:Cubic.easeInOut, onComplete: _reset });
+			}
 		}
 
 		function _reset() {
 			_stop();
-			var n = Math.floor(Math.abs(getLeft(slot)) / sliceWidth);
+			var n = Math.floor(Math.abs(getLimit(slot)) / sliceSize);
 			var toReorderArray = slicesArray.splice(0, n);
 			for (var i = 0; i < toReorderArray.length; i++) {
 				var toReorder = toReorderArray[i];
 				slicesArray.push(toReorder);
 				slot.appendChild(toReorder);
 			}
-			slot.style.left = 0 + "px";
+			if (_isVertical) {
+				slot.style.left = 0 + "px";	
+			} else {
+				slot.style.top = 0 + "px";
+			}
 			//
 			parseSlices();
 		}
@@ -222,9 +251,14 @@ function SpinTwoThree(element, classes) {
 				}
 			}
 			var t = (Math.random() * 750 + 1250) / 1000;
-			var l = "" + (-sliceWidth * count) + "px";
+			var l = "" + (-sliceSize * count) + "px";
 			var that = this;
-			TweenLite.to(slot, t, { css:{ left:l }, ease:Cubic.easeInOut, onComplete: _reset });
+			if (_isVertical) {
+				TweenLite.to(slot, t, { css:{ left:l }, ease:Cubic.easeInOut, onComplete: _reset });	
+			} else {
+				TweenLite.to(slot, t, { css:{ top:l }, ease:Cubic.easeInOut, onComplete: _reset });
+			}
+			
 		}
 
 		function _getSlice(id) {
@@ -250,7 +284,7 @@ function SpinTwoThree(element, classes) {
 
 	function parseSlices(decrement) {
 		if (decrement === true) {
-			spinsCompleted = Math.max(0, spinsComplete -= 1);
+			spinsCompleted = Math.max(0, spinsCompleted -= 1);
 		} else {
 			spinsCompleted += 1;
 			if (spinsCompleted === slots.length)
@@ -311,6 +345,9 @@ function SpinTwoThree(element, classes) {
 				slots[i].shuffle();
 			}
 		}
+		if (firstSpinned === false) {
+			currentId = NaN;
+		}
 	}
 
 	function _spin(slotIndex) {
@@ -321,6 +358,7 @@ function SpinTwoThree(element, classes) {
 				slots[i].spin();
 			}
 		}
+		firstSpinned = true;
 		dispatchEvent("spinstart");
 	}
 
