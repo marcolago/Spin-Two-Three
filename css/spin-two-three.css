@@ -17,9 +17,9 @@
 }
 
 .spin-two-three.horizontal {
-	width: auto;
-	height: 1em;
-	background-color: yellow;
+	width: 768px;
+	height: 192px;
+	margin: 0 auto;
 }
 
 .spin-two-three.started {
@@ -31,11 +31,10 @@
 }
 
 .horizontal .spinner {
-	width: 1em;
+	width: 256px;
 	height: 100%;
 	display: block;
 	float: left;
-	background-color: lime;
 }
 
 .slices {
@@ -60,9 +59,9 @@
 }
 
 .horizontal .slice {
-	width: auto;
+	width: 256px;
+	height: 192px;
 	display: block;
-	background-color: red;
 }
 
 .slice img {
