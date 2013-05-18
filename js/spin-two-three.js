@@ -40,28 +40,24 @@ function SpinTwoThree(element, classes) {
 		var className = e.target.className;
 		var enabled = false;
 		//
-		if (className.indexOf("spin-all") !== -1) {
+		if (className.match(/\bspin-all\b/) !== null) {
 			enabled = true;
 		} else {
 			for (var i = 0; i < controlClasses.length; i++) {
-				if (className.indexOf(controlClasses[i]) !== -1) {
+				var rgx = new RegExp(controlClasses[i]);
+				if (className.match(rgx) !== null) {
 					enabled = true;
 				}
 			}
 		}
 		if (enabled) {
-			if (className.indexOf("spin-two-three-spin") !== -1)
-			{
+			if (className.match(/\bspin-two-three-spin\b/) !== null) {
 				e.preventDefault();
 				_spin();
-			}
-			else if (className.indexOf("spin-two-three-prev") !== -1)
-			{
+			} else if (className.match(/\bspin-two-three-prev\b/) !== null) {
 				e.preventDefault();
 				_prev();
-			}
-			else if (className.indexOf("spin-two-three-next") !== -1)
-			{
+			} else if (className.match(/\bspin-two-three-next\b/) !== null) {
 				e.preventDefault();
 				_next();
 			}
@@ -135,8 +131,13 @@ function SpinTwoThree(element, classes) {
 			if (stopped === true) {
 				maxSpeed = Math.floor((Math.random() * 100) + 75);
 				stopped = false;
-				_rollSlot();
+				parseSlices(true);
+				var doRoll = _rollSlot.bind(this);
+				doRoll();
+				dispatchEvent("spinstartsingle", { slot: this });
+				return true;
 			}
+			return false;
 		}
 
 		function _stop() {
@@ -144,7 +145,6 @@ function SpinTwoThree(element, classes) {
 		}
 
 		function _rollSlot() {
-			parseSlices(true);
 			//
 			if (delta !== 0)
 			{
@@ -174,7 +174,8 @@ function SpinTwoThree(element, classes) {
 			//
 			if(animStatus !== 2 && stopped !== true)
 			{
-				requestAnimFrame(_rollSlot);
+				var cb = _rollSlot.bind(this);
+				requestAnimFrame(cb);
 			}
 			else
 			{
@@ -205,17 +206,18 @@ function SpinTwoThree(element, classes) {
 			else if (animStatus === 2)
 			{
 				delta = 0;
-				_gotoNearest();
+				var doNearest = _gotoNearest.bind(this);
+				doNearest();
 			}
-
 		}
 
 		function _gotoNearest() {
 			var l = "0px";
+			var cb = _reset.bind(this);
 			if (_isVertical) {
-				TweenLite.to(slot, 0.5, { left:l, ease:Cubic.easeInOut, onComplete: _reset });
+				TweenLite.to(slot, 0.5, { left:l, ease:Cubic.easeInOut, onComplete: cb });
 			} else {
-				TweenLite.to(slot, 0.5, { top:l, ease:Cubic.easeInOut, onComplete: _reset });
+				TweenLite.to(slot, 0.5, { top:l, ease:Cubic.easeInOut, onComplete: cb });
 			}
 		}
 
@@ -234,6 +236,7 @@ function SpinTwoThree(element, classes) {
 				slot.style.top = 0 + "px";
 			}
 			//
+			dispatchEvent("spincompletesingle", { slot: this });
 			parseSlices();
 		}
 
@@ -252,13 +255,13 @@ function SpinTwoThree(element, classes) {
 			}
 			var t = (Math.random() * 750 + 1250) / 1000;
 			var l = "" + (-sliceSize * count) + "px";
-			var that = this;
+			var cb = _reset.bind(this);
 			if (_isVertical) {
-				TweenLite.to(slot, t, { css:{ left:l }, ease:Cubic.easeInOut, onComplete: _reset });	
+				TweenLite.to(slot, t, { css:{ left:l }, ease:Cubic.easeInOut, onComplete: cb });	
 			} else {
-				TweenLite.to(slot, t, { css:{ top:l }, ease:Cubic.easeInOut, onComplete: _reset });
+				TweenLite.to(slot, t, { css:{ top:l }, ease:Cubic.easeInOut, onComplete: cb });
 			}
-			
+			dispatchEvent("spinstartsingle", { slot: this });
 		}
 
 		function _getSlice(id) {
@@ -354,12 +357,16 @@ function SpinTwoThree(element, classes) {
 		if (slotIndex !== undefined) {
 			slots[slotIndex].spin();
 		} else {
+			var spinStarted = false;
 			for (var i = 0; i < slots.length; i++) {
-				slots[i].spin();
+				var isStarted = slots[i].spin();
+				spinStarted = spinStarted === false ? isStarted === true : true;
+			}
+			if (spinStarted) {
+				dispatchEvent("spinstart");
 			}
 		}
 		firstSpinned = true;
-		dispatchEvent("spinstart");
 	}
 
 	function _prev(slotIndex) {

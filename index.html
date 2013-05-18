@@ -48,7 +48,21 @@
 	<script src="js/spin-two-three.js"></script>
 
 	<script>
-		var spinB = new SpinTwoThree(document.querySelector("#spin-a"), "spin-a");
+		var spinA = new SpinTwoThree(document.querySelector("#spin-a"), "spin-a");
+		spinA.addEventListener("spinstart", onSpin);
+		spinA.addEventListener("spinstartsingle", onSpin);
+		spinA.addEventListener("spincompletesingle", onSpin);
+		spinA.addEventListener("spincomplete", onSpin);
+
+		function onSpin(e) {
+			console.log("###", e.type);
+			if (e.type == "spinstartsingle" || e.type == "spincompletesingle") {
+				console.log(e.slot, e.slot.getSlice(0).index);	
+			}
+			if (e.type == "spincomplete") {
+				console.log(e.slots);
+			}
+		}
 	</script>
 </body>
 </html>
