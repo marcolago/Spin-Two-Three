@@ -48,8 +48,9 @@ You need the core library and the CSS plugin.
 For more informations about Greensock Animation Platform visit the [library website](http://www.greensock.com/).
 
 To build a (retro) cross-browser compatible experience **Spin Two Three** needs a small amout of polyfills to provide some modern features such:
-- [window.requestAnimationFrame](https://developer.mozilla.org/it/docs/DOM/window.requestAnimationFrame) (natively supported only in modern browser)
-- [window.getComputedStyle](https://developer.mozilla.org/it/docs/DOM/window.getComputedStyle) (missing native support in IE8)
+- [Function.prototype.bind](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function/bind) (natively supported only in modern browser); 
+- [window.requestAnimationFrame](https://developer.mozilla.org/it/docs/DOM/window.requestAnimationFrame) (natively supported only in modern browser);
+- [window.getComputedStyle](https://developer.mozilla.org/it/docs/DOM/window.getComputedStyle) (missing native support in IE8).
 
 You can include `polyfills.js` in your markup or, if you already have this polyfills in some of your libraries (or if you can ignore some old browsers), feel free to ignore this file.
 

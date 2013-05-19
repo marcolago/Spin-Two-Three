@@ -1,0 +1,25 @@
+body {
+	font-family: sans-serif;
+	text-align: center;
+}
+
+.spin-two-three {
+	width: 768px;
+	height: 192px;
+	margin: 0 auto;
+}
+
+	.spinner {
+		width: 256px;
+		height: 100%;
+	}
+		
+		.slices {
+
+		}
+			
+			.slice {
+				width: 256px;
+				height: 192px;
+				display: block;
+			}

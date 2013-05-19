@@ -2,41 +2,41 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=342px">
-	<title>Spin Two Three</title>
+	<meta name="viewport" content="initial-scale=1.0">
+	<title>Spin Two Three - Boilerplate</title>
 	<link rel="stylesheet" href="css/spin-two-three.css">
 </head>
 <body>
 	<div class="">
 		<div class="controls">
-			<a href="#" class="spin-two-three-prev spin-a">&lt; PREV</a> -
-			<a href="#" class="spin-two-three-spin spin-all">SPIN!</a> -
-			<a href="#" class="spin-two-three-next spin-a spin-b">NEXT &gt;</a>
+			<a href="#" class="spin-two-three-prev spin-all">&lt; PREV</a> -
+			<a href="#" class="spin-two-three-spin spin-all">SPIN</a> -
+			<a href="#" class="spin-two-three-next spin-all">NEXT &gt;</a>
 		</div>
 		<br>
-		<div class="spin-two-three" id="spin-a">
-			<div class="spinner head">
+		<div class="spin-two-three" id="spin-two-three">
+			<div class="spinner">
 				<div class="slices">
-					<div class="slice"><img src="img/hipster.png" 			alt=""></div>
-					<div class="slice"><img src="img/zombie.png" 			alt=""></div>
-					<div class="slice"><img src="img/geek.png" 				alt=""></div>
-					<div class="slice"><img src="img/skate-girl.png" 		alt=""></div>
+					<div class="slice"><!-- slice content here --></div>
+					<div class="slice"><!-- slice content here --></div>
+					<div class="slice"><!-- slice content here --></div>
+					<div class="slice"><!-- slice content here --></div>
 				</div>
 			</div>
-			<div class="spinner torso">
+			<div class="spinner">
 				<div class="slices">
-					<div class="slice"><img src="img/hipster.png" 			alt=""></div>
-					<div class="slice"><img src="img/zombie.png" 			alt=""></div>
-					<div class="slice"><img src="img/geek.png" 				alt=""></div>
-					<div class="slice"><img src="img/skate-girl.png" 		alt=""></div>
+					<div class="slice"><!-- slice content here --></div>
+					<div class="slice"><!-- slice content here --></div>
+					<div class="slice"><!-- slice content here --></div>
+					<div class="slice"><!-- slice content here --></div>
 				</div>
 			</div>
-			<div class="spinner legs">
+			<div class="spinner">
 				<div class="slices">
-					<div class="slice"><img src="img/hipster.png" 			alt=""></div>
-					<div class="slice"><img src="img/zombie.png" 			alt=""></div>
-					<div class="slice"><img src="img/geek.png" 				alt=""></div>
-					<div class="slice"><img src="img/skate-girl.png" 		alt=""></div>
+					<div class="slice"><!-- slice content here --></div>
+					<div class="slice"><!-- slice content here --></div>
+					<div class="slice"><!-- slice content here --></div>
+					<div class="slice"><!-- slice content here --></div>
 				</div>
 			</div>
 		</div>
@@ -48,14 +48,14 @@
 	<script src="js/spin-two-three.js"></script>
 
 	<script>
-		var spinA = new SpinTwoThree(document.querySelector("#spin-a"), "spin-a");
+		var spinTwoThree = new SpinTwoThree(document.querySelector("#spin-two-three"));
 		spinA.addEventListener("spinstart", onSpin);
 		spinA.addEventListener("spinstartsingle", onSpin);
 		spinA.addEventListener("spincompletesingle", onSpin);
 		spinA.addEventListener("spincomplete", onSpin);
 
 		function onSpin(e) {
-			console.log("###", e.type);
+			console.log("e.type", e.type);
 			if (e.type == "spinstartsingle" || e.type == "spincompletesingle") {
 				console.log(e.slot, e.slot.getSlice(0).index);	
 			}

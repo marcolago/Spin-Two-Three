@@ -129,8 +129,8 @@ function SpinTwoThree(element, classes) {
 
 		function _spin() {
 			if (stopped === true) {
-				maxSpeed = Math.floor((Math.random() * 100) + 75);
 				stopped = false;
+				maxSpeed = Math.floor((Math.random() * 100) + 75);
 				parseSlices(true);
 				var doRoll = _rollSlot.bind(this);
 				doRoll();
@@ -241,27 +241,29 @@ function SpinTwoThree(element, classes) {
 		}
 
 		function _goto(id) {
-			parseSlices(true);
-			var count = 0;
-			_stop();
-			for (var i = 0; i < slicesArray.length; i++)
-			{
-				var s = slicesArray[i];
-				if (s.index == id)
+			if (stopped === true) {
+				stopped = false;
+				parseSlices(true);
+				var count = 0;
+				for (var i = 0; i < slicesArray.length; i++)
 				{
-					count = i;
-					break;
+					var s = slicesArray[i];
+					if (s.index == id)
+					{
+						count = i;
+						break;
+					}
 				}
+				var t = (Math.random() * 750 + 1250) / 1000;
+				var l = "" + (-sliceSize * count) + "px";
+				var cb = _reset.bind(this);
+				if (_isVertical) {
+					TweenLite.to(slot, t, { css:{ left:l }, ease:Cubic.easeInOut, onComplete: cb });	
+				} else {
+					TweenLite.to(slot, t, { css:{ top:l }, ease:Cubic.easeInOut, onComplete: cb });
+				}
+				dispatchEvent("spinstartsingle", { slot: this });
 			}
-			var t = (Math.random() * 750 + 1250) / 1000;
-			var l = "" + (-sliceSize * count) + "px";
-			var cb = _reset.bind(this);
-			if (_isVertical) {
-				TweenLite.to(slot, t, { css:{ left:l }, ease:Cubic.easeInOut, onComplete: cb });	
-			} else {
-				TweenLite.to(slot, t, { css:{ top:l }, ease:Cubic.easeInOut, onComplete: cb });
-			}
-			dispatchEvent("spinstartsingle", { slot: this });
 		}
 
 		function _getSlice(id) {

@@ -1,94 +1,63 @@
-* {
+/* mini reset */
+
+.spin-two-three * {
 	margin: 0;
 	padding: 0;
 	border: none;
 	outline: none;
 }
 
-.spin-two-three {
-	font-family: sans-serif;
-	font-weight: bold;
-	text-align: center;
-	white-space: nowrap;
-	width: 594px;
-	margin: 1em auto;
-	visibility: hidden;
-	overflow: hidden;
-}
-
-.spin-two-three.horizontal {
-	width: 768px;
-	height: 192px;
-	margin: 0 auto;
-}
+/* shows the spin-two-three main element when the scripts runs */
 
 .spin-two-three.started {
 	visibility: visible;
 }
 
-.spinner {
-	position: relative;
+/* vertical */
+
+.spin-two-three {
+	overflow: hidden;
+	visibility: hidden;
 }
 
-.horizontal .spinner {
-	width: 256px;
-	height: 100%;
-	display: block;
-	float: left;
-}
+	.spinner {
+		position: relative;
+		display: block; /* to stack spinners verticaly */
+	}
 
-.slices {
+		.slices {
+			font-size: 0;
+			white-space: nowrap; /* stacks the inner elements horizontally */
+			overflow: hidden;
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+
+			.slice {
+				font-size: 16px;
+				font-size: 1rem;
+				display: inline-block;
+				position: relative;
+			}
+
+/* horizontal */
+
+.spin-two-three.horizontal {
 	font-size: 0;
 	white-space: nowrap;
-	overflow: hidden;
-	position: absolute;
-	top: 0;
-	left: 0;
 }
 
-.horizontal .slices {
-	white-space: pre-wrap;
-}
-
-.slice {
-	font-size: 16px;
-	font-size: 1rem;
-	width: 594px;
-	display: inline-block;
-	position: relative;
-}
-
-.horizontal .slice {
-	width: 256px;
-	height: 192px;
-	display: block;
-}
-
-.slice img {
-	display: block;
-	position: relative;
-}
-
-.head {
-	height: 192px;
-}
-
-	.head .slice img {
-		top: 0;
+	.horizontal .spinner {
+		font-size: 16px;
+		font-size: 1rem;
+		display: inline-block;
 	}
 
-.torso {
-	height: 176px;
-}
+		.horizontal .slices {
+			white-space: pre-wrap;
+		}
 
-	.torso .slice img {
-		top: -192px;
-	}
+			.horizontal .slice {
 
-.legs {
-	height: 240px;
-}
-
-	.legs .slice img {
-		top: -368px;
-	}
+			}
