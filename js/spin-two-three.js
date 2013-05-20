@@ -7,9 +7,10 @@ function SpinTwoThree(element, classes) {
 	var totalSlots = 0;
 	var sliceSize = 0;
 	var spinsCompleted = 0;
+	var isSpinning = false;
 	var currentId = 0;
 	var firstSpinned = false;
-	var _isVertical = true;
+	var isVertical = true;
 
 	// initialization
 	
@@ -19,12 +20,13 @@ function SpinTwoThree(element, classes) {
 		for (var i = 0; i < spinners.length; i++) {
 			slots.push(new Slot(spinners[i]));
 		}
+		spinsCompleted = slots.length;
 		//
 		var slot = slots[0];
 		//
 		if (spinTwoThree.className.match(/\bhorizontal\b/) !== null) {
 			sliceSize = parseInt(window.getComputedStyle(slot.getSlice(0)).height);
-			_isVertical = false;
+			isVertical = false;
 		} else {
 			sliceSize = parseInt(window.getComputedStyle(slot.getSlice(0)).width);
 		}
@@ -65,7 +67,7 @@ function SpinTwoThree(element, classes) {
 	}
 
 	function getLimit(el) {
-		if (_isVertical) {
+		if (isVertical) {
 			return (isNaN(parseInt(el.style.left)) ? 0 : parseInt(el.style.left));	
 		} else {
 			return (isNaN(parseInt(el.style.top)) ? 0 : parseInt(el.style.top));	
@@ -116,7 +118,7 @@ function SpinTwoThree(element, classes) {
 		var animStatus = 0;
 		var delta = 0;
 		var maxSpeed = 100;
-		var stopped = true;
+		var _isSpinning = false;
 		//
 		for (var i = 0; i < slicesArray.length; i++) {
 			slicesArray[i].index = i;
@@ -128,10 +130,9 @@ function SpinTwoThree(element, classes) {
 		}
 
 		function _spin() {
-			if (stopped === true) {
-				stopped = false;
+			if (_isSpinning === false) {
+				_isSpinning = true;
 				maxSpeed = Math.floor((Math.random() * 100) + 75);
-				parseSlices(true);
 				var doRoll = _rollSlot.bind(this);
 				doRoll();
 				dispatchEvent("spinstartsingle", { slot: this });
@@ -141,14 +142,14 @@ function SpinTwoThree(element, classes) {
 		}
 
 		function _stop() {
-			stopped = true;
+			_isSpinning = false;
 		}
 
 		function _rollSlot() {
 			//
 			if (delta !== 0)
 			{
-				if (_isVertical) {
+				if (isVertical) {
 					slot.style.left = getLimit(slot) - delta + "px";
 				} else {
 					slot.style.top = getLimit(slot) - delta + "px";
@@ -165,14 +166,14 @@ function SpinTwoThree(element, classes) {
 					slicesArray.push(toReorder);
 					slot.appendChild(toReorder);
 				}
-				if (_isVertical) {
+				if (isVertical) {
 					slot.style.left = -limitDelta + "px";	
 				} else {
 					slot.style.top = -limitDelta + "px";
 				}
 			}
 			//
-			if(animStatus !== 2 && stopped !== true)
+			if(animStatus !== 2 && _isSpinning !== false)
 			{
 				var cb = _rollSlot.bind(this);
 				requestAnimFrame(cb);
@@ -214,7 +215,7 @@ function SpinTwoThree(element, classes) {
 		function _gotoNearest() {
 			var l = "0px";
 			var cb = _reset.bind(this);
-			if (_isVertical) {
+			if (isVertical) {
 				TweenLite.to(slot, 0.5, { left:l, ease:Cubic.easeInOut, onComplete: cb });
 			} else {
 				TweenLite.to(slot, 0.5, { top:l, ease:Cubic.easeInOut, onComplete: cb });
@@ -230,7 +231,7 @@ function SpinTwoThree(element, classes) {
 				slicesArray.push(toReorder);
 				slot.appendChild(toReorder);
 			}
-			if (_isVertical) {
+			if (isVertical) {
 				slot.style.left = 0 + "px";	
 			} else {
 				slot.style.top = 0 + "px";
@@ -240,10 +241,9 @@ function SpinTwoThree(element, classes) {
 			parseSlices();
 		}
 
-		function _goto(id) {
-			if (stopped === true) {
-				stopped = false;
-				parseSlices(true);
+		function _goto(id, backspin) {
+			if (_isSpinning === false) {
+				_isSpinning = true;
 				var count = 0;
 				for (var i = 0; i < slicesArray.length; i++)
 				{
@@ -254,10 +254,29 @@ function SpinTwoThree(element, classes) {
 						break;
 					}
 				}
+				//
 				var t = (Math.random() * 750 + 1250) / 1000;
-				var l = "" + (-sliceSize * count) + "px";
 				var cb = _reset.bind(this);
-				if (_isVertical) {
+				var l;
+				//
+				if (backspin === true) {
+					var toReorderArray = slicesArray.splice(0, count);
+					for (var i = 0; i < toReorderArray.length; i++) {
+						var toReorder = toReorderArray[i];
+						slicesArray.push(toReorder);
+						slot.appendChild(toReorder);
+					}
+					l = "0px"
+					if (isVertical) {
+						slot.style.left = -sliceSize * (_length - count) + "px";
+					} else {
+						slot.style.top = -sliceSize * (_length - count) + "px";
+					}
+				} else {
+					l = "" + (-sliceSize * count) + "px"
+				}
+				//
+				if (isVertical) {
 					TweenLite.to(slot, t, { css:{ left:l }, ease:Cubic.easeInOut, onComplete: cb });	
 				} else {
 					TweenLite.to(slot, t, { css:{ top:l }, ease:Cubic.easeInOut, onComplete: cb });
@@ -277,13 +296,18 @@ function SpinTwoThree(element, classes) {
 			return slicesArray;
 		}
 
+		function _getSpinningStatus() {
+			return _isSpinning;
+		}
+
 		return {
 			shuffle: _shuffle,
 			spin: _spin,
-			gotoSlot: _goto,
+			gotoSlice: _goto,
 			getSlice: _getSlice,
 			getSlices: _getSlices,
-			length: _length
+			length: _length,
+			isSpinning: _getSpinningStatus
 		}
 	}
 
@@ -294,8 +318,6 @@ function SpinTwoThree(element, classes) {
 			spinsCompleted += 1;
 			if (spinsCompleted === slots.length)
 			{
-				spinsCompleted = 0;
-				//
 				var _slots = [];
 				for (var i = 0; i < slots.length; i++) {
 					_slots.push(slots[i]);
@@ -343,7 +365,7 @@ function SpinTwoThree(element, classes) {
 	// public methods
 
 	function _shuffle(slotIndex) {
-		if (slotIndex !== undefined) {
+		if (slotIndex !== undefined && slotIndex < slots.length) {
 			slots[slotIndex].shuffle();
 		} else {
 			for (var i = 0; i < slots.length; i++) {
@@ -356,13 +378,21 @@ function SpinTwoThree(element, classes) {
 	}
 
 	function _spin(slotIndex) {
-		if (slotIndex !== undefined) {
-			slots[slotIndex].spin();
+		if (slotIndex !== undefined && slotIndex < slots.length) {
+			var s = slots[slotIndex];
+			if (s.isSpinning()=== false) {
+				s.spin();
+				setSpin(s);
+			}
 		} else {
 			var spinStarted = false;
 			for (var i = 0; i < slots.length; i++) {
-				var isStarted = slots[i].spin();
-				spinStarted = spinStarted === false ? isStarted === true : true;
+				var s = slots[i];
+				if (s.isSpinning()=== false) {
+					s.spin();
+				}
+				spinStarted = spinStarted === false ? s.isSpinning()=== true : true;
+				setSpin(s);
 			}
 			if (spinStarted) {
 				dispatchEvent("spinstart");
@@ -372,49 +402,85 @@ function SpinTwoThree(element, classes) {
 	}
 
 	function _prev(slotIndex) {
-		if (slotIndex !== undefined) {
-			var dest = slots[slotIndex].getSlice().index - 1;
+		if (slotIndex !== undefined && slotIndex < slots.length) {
+			var s = slots[slotIndex];
+			var dest = s.getSlice().index - 1;
 			if (dest < 0) {
-				dest = slots[slotIndex].length - 1;
+				dest = s.length - 1;
 			}
-			slots[slotIndex].gotoSlot(dest);
+			if (s.isSpinning()=== false) {
+				_goto(dest, slotIndex, true);
+			}
 		} else {
+			for (var i = 0; i < slots.length; i++) {
+				if (slots[i].isSpinning() === true)
+				{
+					return;
+				}
+			}
 			if (isNaN(currentId) || currentId <= 0)
 			{
 				currentId = totalSlots;
 			}
 			currentId -= 1;
-			_gotoSlot(currentId);
+			_goto(currentId, undefined, true);
 		}
 	}
 
 	function _next(slotIndex) {
-		if (slotIndex !== undefined) {
-			var dest = slots[slotIndex].getSlice().index + 1;
-			if (dest > slots[slotIndex].length - 1) {
+		if (slotIndex !== undefined && slotIndex < slots.length) {
+			var s = slots[slotIndex];
+			var dest = s.getSlice().index + 1;
+			if (dest > s.length - 1) {
 				dest = 0;
 			}
-			slots[slotIndex].gotoSlot(dest);
+			if (s.isSpinning()=== false) {
+				_goto(dest, slotIndex);
+			}
 		} else {
+			for (var i = 0; i < slots.length; i++) {
+				if (slots[i].isSpinning() === true)
+				{
+					return;
+				}
+			}
 			if (isNaN(currentId) || currentId >= totalSlots - 1)
 			{
 				currentId = -1;
 			}
 			currentId += 1;
-			_gotoSlot(currentId);
+			_goto(currentId);
 		}
 	}
 
-	function _gotoSlot(id) {
-		for (var i = 0; i < slots.length; i++) {
-			slots[i].gotoSlot(id);
+	function _goto(id, slotIndex, backspin) {
+		if (slotIndex !== undefined && slotIndex < slots.length) {
+			var s = slots[slotIndex];
+			if (s.isSpinning()=== false) {
+				s.gotoSlice(id, backspin);
+				setSpin(s);
+			}
+		} else {
+			for (var i = 0; i < slots.length; i++) {
+				var s = slots[i];
+				if (s.isSpinning()=== false) {
+					s.gotoSlice(id, backspin);
+					setSpin(s);
+				}
+			}
+			dispatchEvent("spinstart");
 		}
-		dispatchEvent("spinstart");
 	}
 
 	function _align(slotIndex) {
 		slotIndex = slotIndex || 0;
-		_gotoSlot(slots[slotIndex].getSlice().index);
+		_goto(slots[slotIndex].getSlice().index);
+	}
+
+	function setSpin(slot) {
+		if (slot.isSpinning() === true) {
+			spinsCompleted = Math.max(0, spinsCompleted - 1);
+		}
 	}
 
 	// API
@@ -424,7 +490,7 @@ function SpinTwoThree(element, classes) {
 		spin: _spin,
 		prev: _prev,
 		next: _next,
-		gotoSlot: _gotoSlot,
+		gotoSlice: _goto,
 		align: _align,
 		addEventListener: _addEventListener
 	};
