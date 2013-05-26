@@ -20,9 +20,9 @@
 	visibility: hidden;
 }
 
-	.spinner {
+	.wheel {
 		position: relative;
-		display: block; /* to stack spinners verticaly */
+		display: block; /* to stack wheels verticaly */
 	}
 
 		.slices {
@@ -48,7 +48,7 @@
 	white-space: nowrap;
 }
 
-	.horizontal .spinner {
+	.horizontal .wheel {
 		font-size: 16px;
 		font-size: 1rem;
 		display: inline-block;
