@@ -354,7 +354,7 @@ function SpinTwoThree(element, classes) {
 		}
 		else if (document.attachEvent)
 		{
-			document.attachEvent(type, handler);
+			document.attachEvent("on" + type, handler);
 		}
 	}
 	
