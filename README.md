@@ -152,9 +152,9 @@ You need the core library and the CSS plugin.
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.9.5/TweenLite.min.js"></script>
 ```
 
-For more informations about Greensock Animation Platform visit the [library website][(http://www.greensock.com/)].
+For more informations about Greensock Animation Platform visit the [library website](http://www.greensock.com/).
 
-To build a (retro) cross-browser compatible experience **Spin Two Three** needs a small amout of polyfills to provide some modern features such:
+To build a (retro) cross-browser compatible experience **Spin Two Three** needs a small amount of polyfills to provide some modern features such:
 - [Function.prototype.bind](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function/bind) (natively supported only in modern browser); 
 - [window.requestAnimationFrame](https://developer.mozilla.org/it/docs/DOM/window.requestAnimationFrame) (natively supported only in modern browser);
 - [window.getComputedStyle](https://developer.mozilla.org/it/docs/DOM/window.getComputedStyle) (missing native support in IE8).
