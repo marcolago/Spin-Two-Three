@@ -1,15 +1,7 @@
 # Spin Two Three
 ## A Really Simple Absolutely Randomic Slot Machine Mini Library.
-### Also Useful for synchronized carousels
 
 If you need a basic slot machine script wich is easy to plug and slightly customizable **Spin Two Three** is the right script for you.
-
-### Some Examples
-
-- [Vertical Wheels Slot](example-vertical)
-- [Horizontal Wheels Slot](example-horizontal)
-- [Multiple Synchronized Slots](example-multiple)
-- [Fluid/Responsive Slot](example-fluid)
 
 ### Easy to Plug
 
@@ -160,9 +152,9 @@ You need the core library and the CSS plugin.
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.9.5/TweenLite.min.js"></script>
 ```
 
-For more informations about Greensock Animation Platform visit the [library website][(http://www.greensock.com/)].
+For more informations about Greensock Animation Platform visit the [library website](http://www.greensock.com/).
 
-To build a (retro) cross-browser compatible experience **Spin Two Three** needs a small amout of polyfills to provide some modern features such:
+To build a (retro) cross-browser compatible experience **Spin Two Three** needs a small amount of polyfills to provide some modern features such:
 - [Function.prototype.bind](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function/bind) (natively supported only in modern browser); 
 - [window.requestAnimationFrame](https://developer.mozilla.org/it/docs/DOM/window.requestAnimationFrame) (natively supported only in modern browser);
 - [window.getComputedStyle](https://developer.mozilla.org/it/docs/DOM/window.getComputedStyle) (missing native support in IE8).
@@ -174,4 +166,3 @@ Include all the dependencies before `spin-two-three.js`.
  [example-vertical]: http://github.com/marcolago/spin-two-three/examples/vertical/
  [example-horizontal]: http://github.com/marcolago/spin-two-three/examples/horizontal/
  [example-multiple]: http://github.com/marcolago/spin-two-three/examples/multiple/
- [example-fluid]: http://github.com/marcolago/spin-two-three/examples/fluid/
