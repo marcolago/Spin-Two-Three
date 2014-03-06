@@ -1,10 +1,8 @@
 /* mini reset */
 
-.spin-two-three * {
+.spin-two-three img {
 	margin: 0;
-	padding: 0;
-	border: none;
-	outline: none;
+	display: block;
 }
 
 /* shows the spin-two-three main element when the scripts runs */
@@ -21,6 +19,7 @@
 }
 
 	.wheel {
+		width: 100%;
 		position: relative;
 		display: block; /* to stack wheels verticaly */
 	}
@@ -28,8 +27,7 @@
 		.slices {
 			font-size: 0;
 			white-space: nowrap; /* stacks the inner elements horizontally */
-			overflow: hidden;
-			position: absolute;
+			position: relative;
 			top: 0;
 			left: 0;
 		}
@@ -37,7 +35,9 @@
 			.slice {
 				font-size: 16px;
 				font-size: 1rem;
+				white-space: normal;
 				display: inline-block;
+				vertical-align: top;
 				position: relative;
 			}
 
@@ -55,7 +55,7 @@
 	}
 
 		.horizontal .slices {
-			white-space: pre-wrap;
+			white-space: normal;
 		}
 
 			.horizontal .slice {

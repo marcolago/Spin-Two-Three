@@ -1,0 +1,25 @@
+body {
+	font-family: sans-serif;
+	text-align: center;
+}
+
+.spin-two-three {
+	width: 100%;
+	max-width: 1000px;
+	margin: 1em auto;
+}
+
+	.wheel {
+	}
+		
+		.slices {
+		}
+
+			.slice {
+			}
+
+				.slice img {
+					width: 100%;
+					display: block;
+					position: relative;
+				}

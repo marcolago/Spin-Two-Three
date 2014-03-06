@@ -1,7 +1,15 @@
 # Spin Two Three
 ## A Really Simple Absolutely Randomic Slot Machine Mini Library.
+### Also Useful for Synchronized Carousels.
 
 If you need a basic slot machine script wich is easy to plug and slightly customizable **Spin Two Three** is the right script for you.
+
+### Some Examples
+
+- [Vertical Wheels Slot](example-vertical)
+- [Horizontal Wheels Slot](example-horizontal)
+- [Multiple Synchronized Slots](example-multiple)
+- [Fluid Responsive Slot](example-fluid)
 
 ### Easy to Plug
 
@@ -32,7 +40,7 @@ If you need you can use the `index.html` in the project's root as a boilerplate 
 In order to create a new Spin Two Three object you just have to declare a new instance using the standard Javascript syntax.
 
 ```javascript
-	new SpinTwoThree(DOMElement, control-class)
+	new SpinTwoThree(DOMElement, [control-class])
 ```
 or 
 ```javascript
