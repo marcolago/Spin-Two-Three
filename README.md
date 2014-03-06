@@ -1,7 +1,15 @@
 # Spin Two Three
 ## A Really Simple Absolutely Randomic Slot Machine Mini Library.
+### Also Useful for synchronized carousels
 
 If you need a basic slot machine script wich is easy to plug and slightly customizable **Spin Two Three** is the right script for you.
+
+### Some Examples
+
+- [Vertical Wheels Slot](example-vertical)
+- [Horizontal Wheels Slot](example-horizontal)
+- [Multiple Synchronized Slots](example-multiple)
+- [Fluid/Responsive Slot](example-fluid)
 
 ### Easy to Plug
 
@@ -166,3 +174,4 @@ Include all the dependencies before `spin-two-three.js`.
  [example-vertical]: http://github.com/marcolago/spin-two-three/examples/vertical/
  [example-horizontal]: http://github.com/marcolago/spin-two-three/examples/horizontal/
  [example-multiple]: http://github.com/marcolago/spin-two-three/examples/multiple/
+ [example-fluid]: http://github.com/marcolago/spin-two-three/examples/fluid/
