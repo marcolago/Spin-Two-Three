@@ -4,13 +4,6 @@
 
 If you need a basic slot machine script wich is easy to plug and slightly customizable **Spin Two Three** is the right script for you.
 
-### Some Examples
-
-- [Vertical Wheels Slot](example-vertical)
-- [Horizontal Wheels Slot](example-horizontal)
-- [Multiple Synchronized Slots](example-multiple)
-- [Fluid Responsive Slot](example-fluid)
-
 ### Easy to Plug
 
 Just include `spin-two-three.js` and the dependencies at the bottom of your markup, include the `spin-two-three.css` and customize the look as you need and, at last, white down the markup as follow:
