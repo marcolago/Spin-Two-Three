@@ -21,6 +21,7 @@
 	.wheel {
 		width: 100%;
 		position: relative;
+		overflow: hidden;
 		display: block; /* to stack wheels verticaly */
 	}
 

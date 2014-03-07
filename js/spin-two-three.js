@@ -44,21 +44,24 @@ function SpinTwoThree(element, classes) {
     }
     spinsCompleted = slots.length;
     //
-    var slot = slots[0];
-    //
-    if (spinTwoThree.className.match(/\bhorizontal\b/) !== null) {
-      sliceSize = 100; //parseInt(window.getComputedStyle(slot.getSlice(0)).height);
-      isVertical = false;
-    } else {
-      sliceSize = 100; //parseInt(window.getComputedStyle(slot.getSlice(0)).width);
-    }
-    totalSlots = slot.getSlices().length;
+	getSliceSize();
+	//
+    totalSlots = slots[0].getSlices().length;
     //
     _addEventListener("click", parseClick, false);
     _addEventListener("touchend", parseClick, false);
     //
     spinTwoThree.className += " started";
   })();
+  
+  function getSliceSize() {
+    if (spinTwoThree.className.match(/\bhorizontal\b/) !== null) {
+      sliceSize = usePx === false ? 100 : parseInt(window.getComputedStyle(slots[0].getSlice(0)).height);
+      isVertical = false;
+    } else {
+      sliceSize = usePx === false ? 100 : parseInt(window.getComputedStyle(slots[0].getSlice(0)).width);
+    }
+  }
 
   function parseClick(e) {
     var t = e.target || e.srcElement;
@@ -371,7 +374,7 @@ function SpinTwoThree(element, classes) {
           }
         }
         //
-        var t = (Math.random() * 750 + 1250) / 1000;
+        var t = ((Math.random() * 750) + 1250) / 1000;
         var cb = _reset.bind(this);
         var l;
         //
@@ -600,6 +603,7 @@ function SpinTwoThree(element, classes) {
       usePx = false;
       unit = "%";
     }
+	getSliceSize();
   }
 
   // API
