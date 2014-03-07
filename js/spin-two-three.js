@@ -1,3 +1,10 @@
+﻿/*!
+ * Spin Two Three
+ * https://github.com/marcolago/Spin-Two-Three
+ * MIT licensed
+ *
+ * Copyright (C) 2013-now Marco Lago, http://marcolago.com
+ */
 function SpinTwoThree(element, classes) {
   'use strict';
 
@@ -7,6 +14,9 @@ function SpinTwoThree(element, classes) {
   var EVENT_SPIN_START =            "spinstart"
   var EVENT_SPIN_COMPLETE_SINGLE =  "spincompletesingle"
   var EVENT_SPIN_COMPLETE =         "spincomplete"
+
+  var _COMMAND_SPIN =                "spin";
+  var _COMMAND_GOTO =                "goto";
 
   var spinTwoThree = element;
   var controlClasses = [];
@@ -20,6 +30,7 @@ function SpinTwoThree(element, classes) {
   var isVertical = true;
   var unit = "%";
   var usePx = false;
+  var _override = false;
 
   var callbackStartSingle = undefined;
   var callbackStart = undefined;
@@ -44,12 +55,12 @@ function SpinTwoThree(element, classes) {
     }
     spinsCompleted = slots.length;
     //
-	getSliceSize();
-	//
+	  getSliceSize();
+    //
     totalSlots = slots[0].getSlices().length;
     //
     _addEventListener("click", parseClick, false);
-    _addEventListener("touchend", parseClick, false);
+    // _addEventListener("touchend", parseClick, false);
     //
     spinTwoThree.className += " started";
   })();
@@ -249,12 +260,12 @@ function SpinTwoThree(element, classes) {
     }
 
     function _spin() {
-      if (_isSpinning === false) {
+      if (_isSpinning === false || _override === true) {
         _isSpinning = true;
         maxSpeed = Math.floor((Math.random() * 100) + 75) * (usePx === true ? 1 : 0.35);
         var doRoll = _rollSlot.bind(this);
         doRoll();
-        dispatchEvent(EVENT_SPIN_START_SINGLE, { slot: this });
+        dispatchEvent(EVENT_SPIN_START_SINGLE, { slot: this, command: _COMMAND_SPIN });
         return true;
       }
       return false;
@@ -361,7 +372,7 @@ function SpinTwoThree(element, classes) {
     }
 
     function _goto(id, backspin) {
-      if (_isSpinning === false) {
+      if (_isSpinning === false || _override === true) {
         _isSpinning = true;
         var count = 0;
         for (var i = 0; i < slicesArray.length; i++)
@@ -400,7 +411,7 @@ function SpinTwoThree(element, classes) {
         } else {
           TweenLite.to(slot, t, { css:{ top:l }, ease:Cubic.easeInOut, onComplete: cb });
         }
-        dispatchEvent(EVENT_SPIN_START_SINGLE, { slot: this });
+        dispatchEvent(EVENT_SPIN_START_SINGLE, { slot: this, command: _COMMAND_GOTO, index: id, backspin: backspin });
       }
     }
 
@@ -476,7 +487,7 @@ function SpinTwoThree(element, classes) {
     var spinStarted = false;
     if (slotIndex !== undefined && slotIndex < slots.length) {
       var s = slots[slotIndex];
-      if (s.isSpinning()=== false) {
+      if (s.isSpinning()=== false || _override === true) {
         s.spin();
         setSpin(s);
       }
@@ -492,7 +503,7 @@ function SpinTwoThree(element, classes) {
       }
     }
     if (spinStarted) {
-      dispatchEvent(EVENT_SPIN_START);
+      dispatchEvent(EVENT_SPIN_START, { command: _COMMAND_SPIN });
     }
     firstSpinned = true;
   }
@@ -504,22 +515,23 @@ function SpinTwoThree(element, classes) {
       if (dest < 0) {
         dest = s.length - 1;
       }
-      if (s.isSpinning()=== false) {
+      if (s.isSpinning()=== false || _override === true) {
         _goto(dest, slotIndex, true);
       }
     } else {
       for (var i = 0; i < slots.length; i++) {
-        if (slots[i].isSpinning() === true)
+        if (slots[i].isSpinning() !== false && _override === true)
         {
           return;
         }
       }
+      var idTo = currentId;
       if (isNaN(currentId) || currentId <= 0)
       {
-        currentId = totalSlots;
+        idTo = totalSlots;
       }
-      currentId -= 1;
-      _goto(currentId, undefined, true);
+      idTo -= 1;
+      _goto(idTo, undefined, true);
     }
   }
 
@@ -530,44 +542,52 @@ function SpinTwoThree(element, classes) {
       if (dest > s.length - 1) {
         dest = 0;
       }
-      if (s.isSpinning()=== false) {
+      if (s.isSpinning()=== false || _override === true) {
         _goto(dest, slotIndex);
       }
     } else {
       for (var i = 0; i < slots.length; i++) {
-        if (slots[i].isSpinning() === true)
+        if (slots[i].isSpinning() === true && _override === false)
         {
           return;
         }
       }
+      var idTo = currentId
       if (isNaN(currentId) || currentId >= totalSlots - 1)
       {
-        currentId = -1;
+        idTo = -1;
       }
-      currentId += 1;
-      _goto(currentId);
+      idTo += 1;
+      _goto(idTo);
     }
   }
 
   function _goto(id, slotIndex, backspin) {
+    var willGo = false;
     if (slotIndex !== undefined && slotIndex < slots.length) {
       var s = slots[slotIndex];
-      if (s.isSpinning()=== false) {
+      if (s.isSpinning()=== false || _override === true) {
         s.gotoSlice(id, backspin);
         setSpin(s);
+        currentId = id;
+        willGo = true;
       }
     } else {
       for (var i = 0; i < slots.length; i++) {
         var s = slots[i];
-        if (s.isSpinning()=== false) {
+        if (s.isSpinning()=== false || _override === true) {
           s.gotoSlice(id, backspin);
           setSpin(s);
+          currentId = id;
+          willGo = true;
         }
       }
-      dispatchEvent(EVENT_SPIN_START);
+      if (willGo === true) {
+        dispatchEvent(EVENT_SPIN_START, { command: _COMMAND_GOTO, index: id, backspin: backspin });
+      }
     }
   }
-
+  
   function _align(slotIndex) {
     slotIndex = slotIndex || 0;
     _goto(slots[slotIndex].getSlice().index);
@@ -606,9 +626,15 @@ function SpinTwoThree(element, classes) {
 	getSliceSize();
   }
 
+  function _setSpinOverride(value) {
+    _override = value;
+  }
+
   // API
 
   return {
+    commandSpin: _COMMAND_SPIN,
+    commandGoto: _COMMAND_GOTO,
     shuffle: _shuffle,
     spin: _spin,
     prev: _prev,
@@ -620,7 +646,7 @@ function SpinTwoThree(element, classes) {
     setCallbackStart: _setCallbackStart,
     setCallbackCompleteSingle: _setCallbackCompleteSingle,
     setCallbackComplete: _setCallbackComplete,
-    usePixels: _usePixels
+    usePixels: _usePixels,
+    setSpinOverride: _setSpinOverride
   };
-
 }
