@@ -59,7 +59,7 @@ And you can do this by Javascript API or via default controls.
 
 #### Default Controls
 
-Spin Two Three comes with built-in default controls you can easy implement in the markup just setting some classes.  
+Spin Two Three comes with built-in default controls you can easyly implement in the markup just setting some classes.  
 If you want to have an element which spins all the wheels when selected just add `spin-two-three-spin` class to the element, like this:
 
 ```html
@@ -80,7 +80,7 @@ If you want to have an element which goes to the previous full combo when select
 
 Every control controls all the spinners woth the same control class defined when creating a Spin Two Three instance.  
 If you want to control more than a spinner with a single button you can add more than a control class (or use the same control class in the instance declaration).  
-If you want to control all the instances with a single button you can add the specia class `spin-all` to the control, like this:
+If you want to control all the instances with a single button you can add the special class `spin-all` to the control, like this:
 
 ```html
 	<a class="spin-two-three-spin spin-all">PREV</a>
@@ -130,7 +130,7 @@ If the optional `wheel` parameter is specified only DOM inside the wheel corresp
 ```javascript
 	SpinTwoThree.align([Number wheel]);
 ```
-Aligns all the wheels to the value in the whell specified by the optional `wheel` parameter.
+Aligns all the wheels to the value in the wheel specified by the optional `wheel` parameter.
 If the optional `wheel` parameter is omitted every wheel will be aligned with the first one.
 
 ### Vertical or Horizontal?
