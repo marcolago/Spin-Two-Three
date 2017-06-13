@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1.0">
+  <title>Spin Two Three - Vertical Example</title>
+  <link rel="stylesheet" href="../../css/spin-two-three.css">
+  <link rel="stylesheet" href="css/eye-candy.css">
+</head>
+<body>
+  <div class="">
+    <div class="controls">
+      <a href="#" class="spin-two-three-prev spin-a">&lt; PREV</a> -
+      <a href="#" class="spin-two-three-spin spin-all">SPIN</a> -
+      <a href="#" class="spin-two-three-next spin-a spin-b">NEXT &gt;</a>
+    </div>
+    <br>
+    <div class="spin-two-three" id="spin-a">
+      <div class="wheel head">
+        <div class="slices">
+          <div class="slice"  data-name="Hipster"         ><img src="img/hipster.png"></div>
+          <div class="slice"  data-name="Zombie"          ><img src="img/zombie.png"></div>
+          <div class="slice"  data-name="Geek"            ><img src="img/geek.png"></div>
+          <div class="slice"  data-name="Skate Girl"      ><img src="img/skate-girl.png"></div>
+          <div class="slice"  data-name="Basket Player"   ><img src="img/basket-player.png"></div>
+        </div>
+      </div>
+      <div class="wheel torso">
+        <div class="slices">
+          <div class="slice"  data-name="Hipster"         ><img src="img/hipster.png"></div>
+          <div class="slice"  data-name="Zombie"          ><img src="img/zombie.png"></div>
+          <div class="slice"  data-name="Geek"            ><img src="img/geek.png"></div>
+          <div class="slice"  data-name="Skate Girl"      ><img src="img/skate-girl.png"></div>
+          <div class="slice"  data-name="Basket Player"   ><img src="img/basket-player.png"></div>
+        </div>
+      </div>
+      <div class="wheel legs">
+        <div class="slices">
+          <div class="slice"  data-name="Hipster"         ><img src="img/hipster.png"></div>
+          <div class="slice"  data-name="Zombie"          ><img src="img/zombie.png"></div>
+          <div class="slice"  data-name="Geek"            ><img src="img/geek.png"></div>
+          <div class="slice"  data-name="Skate Girl"      ><img src="img/skate-girl.png"></div>
+          <div class="slice"  data-name="Basket Player"   ><img src="img/basket-player.png"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../libs/plugins/CSSPlugin.min.js"></script>
+  <script src="../../libs/TweenLite.min.js"></script>
+  <script src="../../js/polyfills.js"></script>
+  <script src="../../js/spin-two-three.js"></script>
+
+  <script>
+    var spinA = new SpinTwoThree(document.querySelector("#spin-a"), "spin-a", 1000, 2000);
+    spinA.addEventListener("spinstart", onSpin);
+    spinA.addEventListener("spinstartsingle", onSpin);
+    spinA.addEventListener("spincompletesingle", onSpin);
+    spinA.addEventListener("spincomplete", onSpin);
+    var d;
+
+    function onSpin(e) {
+      if (e.type === "spincompletesingle") {
+        if (d === undefined) {
+          d = Date.now();
+        }
+        console.log("time Slot " + e.slot.getIndex(), Date.now() - d);
+      } else if ( e.type === "spincomplete") {
+        console.log("### Spin Complete ###");
+        d = undefined;
+      }
+    }
+  </script>
+</body>
+</html>

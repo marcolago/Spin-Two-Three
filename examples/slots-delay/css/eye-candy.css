@@ -1,0 +1,50 @@
+body {
+	font-family: sans-serif;
+	text-align: center;
+}
+
+.spin-two-three {
+	width: 594px;
+	margin: 1em auto;
+}
+
+	.wheel {
+		
+	}
+		
+		.slices {
+
+		}
+
+			.slice {
+				width: 594px;
+			}
+
+				.slice img {
+					display: block;
+					position: relative;
+				}
+
+	.head {
+		height: 192px;
+	}
+
+				.head .slice img {
+					top: 0;
+				}
+
+	.torso {
+		height: 176px;
+	}
+
+				.torso .slice img {
+					top: -192px;
+				}
+
+	.legs {
+		height: 240px;
+	}
+
+				.legs .slice img {
+					top: -368px;
+				}

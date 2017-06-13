@@ -5,7 +5,7 @@
  *
  * Copyright (C) 2013-now Marco Lago, http://marcolago.com
  */
-function SpinTwoThree(element, classes) {
+function SpinTwoThree(element, classes, slotsDelay, slotsSpinTime) {
   'use strict';
 
   var SLICES_CLASS = ".slices";
@@ -23,9 +23,11 @@ function SpinTwoThree(element, classes) {
   var spinTwoThree = element;
   var controlClasses = [];
   var slots = [];
+  var slotsDelay = slotsDelay || NaN;
   var totalSlots = 0;
   var sliceSize = 0;
   var spinsCompleted = 0;
+  var spinTime =  slotsSpinTime || 1000;
   var isSpinning = false;
   var currentId = 0;
   var firstSpinned = false;
@@ -79,7 +81,7 @@ function SpinTwoThree(element, classes) {
     var wheels = spinTwoThree.querySelectorAll(SLICES_CLASS);
     //
     for (var i = 0; i < wheels.length; i++) {
-      slots.push(new Slot(wheels[i]));
+      slots.push(new Slot(wheels[i], i, i * slotsDelay));
     }
     spinsCompleted = slots.length;
     //
@@ -271,15 +273,23 @@ function SpinTwoThree(element, classes) {
  ######  ########  #######     ##        #######  ########   ######  
 */
 
-  function Slot(slices) {
+  function Slot(slices, index, slotDelay) {
     var slot = slices;
+    var index = index;
     var slices = slot.querySelectorAll(SLICE_CLASS);
     var slicesArray = toArray(slices);
     var _length = slicesArray.length;
-    var animStatus = 0;
-    var delta = 0;
-    var maxSpeed = 50;
+    var delay = slotDelay || 0;
+    var minSpeed = 15;
+    var decelerationSpeed = 1;
+    //
+    var animStatus = -1;
+    var delta;
+    var speedIncrement;
+    var maxSpeed;
+    var delayTimeout;
     var _isSpinning = false;
+    var _isSlowing = false;
     //
     for (var i = 0; i < slicesArray.length; i++) {
       slicesArray[i].index = i;
@@ -293,9 +303,22 @@ function SpinTwoThree(element, classes) {
     function _spin() {
       if (_isSpinning === false || _override === true) {
         _isSpinning = true;
-        maxSpeed = Math.floor((Math.random() * 50) + 50) * (usePx === true ? 1 : 0.35);
+        _isSlowing = false;
+        animStatus = 0;
+        delta = 0;
+        speedIncrement = 0.8 + (Math.random() * 2);
+        maxSpeed = (Math.random() * 20) + 20;
+        //maxSpeed = minSpeed + (Math.floor(speed) * (usePx === true ? 1 : 0.35) * (0.1 * index));
+        
+        clearInterval(delayTimeout);
+        delayTimeout = setTimeout(function() {
+          _isSlowing = true;
+          clearInterval(delayTimeout);
+        }, spinTime + delay);
+        
         var doRoll = _rollSlot.bind(this);
         doRoll();
+
         dispatchEvent(EVENT_SPIN_START_SINGLE, {
           slot: this,
           command: _COMMAND_SPIN
@@ -335,26 +358,40 @@ function SpinTwoThree(element, classes) {
         }
       }
       //
-      if (animStatus !== 2 && _isSpinning !== false) {
+      if (animStatus !== -1 && _isSpinning !== false) {
+        // slot is spinning
         var cb = _rollSlot.bind(this);
         requestAnimFrame(cb);
       } else {
+        // slot is stopped
         delta = 0;
         animStatus = 0;
       }
-      if (delta >= maxSpeed) {
-        animStatus = 1;
-      } else if (delta <= -maxSpeed) {
-        animStatus = 1;
-      } else if (delta === 0 && animStatus === 1) {
-        animStatus = 2;
+      if (Math.abs(delta) >= Math.abs(maxSpeed)) {
+        // slot is spinning and
+        if (_isSlowing === true) {
+          // is slowing
+          animStatus = 1;
+        } else {
+          // is at max speed waiting for the timeout
+          animStatus = 2;
+        }
+      } else if ((Math.floor(delta) <= speedIncrement && animStatus === 1) || (Math.floor(delta) <= speedIncrement && animStatus === 2)) {
+        // slot is stopping
+        animStatus = -1;
       }
       //
       if (animStatus === 0) {
-        delta += (usePx === true ? 1 : 0.5);
+        // is accelerating
+        delta += (usePx === true ? speedIncrement : 0.5 * speedIncrement);
       } else if (animStatus === 1) {
-        delta -= (usePx === true ? 1 : 0.5);
+        // is decelerating
+        delta -= (usePx === true ? decelerationSpeed : decelerationSpeed * 0.5);
       } else if (animStatus === 2) {
+        // is at max speed
+        delta = maxSpeed;
+      } else if (animStatus === -1) {
+        // is stopped and going in place
         delta = 0;
         var doNearest = _gotoNearest.bind(this);
         doNearest();
@@ -470,6 +507,10 @@ function SpinTwoThree(element, classes) {
       return slicesArray;
     }
 
+    function _getIndex() {
+      return index;
+    }
+
     function _getSpinningStatus() {
       return _isSpinning;
     }
@@ -481,26 +522,8 @@ function SpinTwoThree(element, classes) {
       getSlice: _getSlice,
       getSlices: _getSlices,
       length: _length,
+      getIndex: _getIndex,
       isSpinning: _getSpinningStatus
-    }
-  }
-
-  /*
-   ###    ##    ## #### ##     ##    ###    ######## ####  #######  ##    ## 
-  ## ##   ###   ##  ##  ###   ###   ## ##      ##     ##  ##     ## ###   ## 
- ##   ##  ####  ##  ##  #### ####  ##   ##     ##     ##  ##     ## ####  ## 
-##     ## ## ## ##  ##  ## ### ## ##     ##    ##     ##  ##     ## ## ## ## 
-######### ##  ####  ##  ##     ## #########    ##     ##  ##     ## ##  #### 
-##     ## ##   ###  ##  ##     ## ##     ##    ##     ##  ##     ## ##   ### 
-##     ## ##    ## #### ##     ## ##     ##    ##    ####  #######  ##    ## 
-*/
-
-  function animloop() {
-    requestAnimFrame(animloop);
-    // place the rAF *before* the render() to assure as close to
-    // 60fps with the setTimeout fallback.
-    for (var i = 0; i < slots.length; i++) {
-      render(slots[i]);
     }
   }
 
