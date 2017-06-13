@@ -52,15 +52,15 @@ More on the control classes in the next paragraph.
 
 ### slotsDelay and slotsSpinTime Parameters
 
-The `slotsDelay` and `slotsSpinTime` are optiona parameters you can use to customize the slots’ spin time and the delay between slots full stop.
+The `slotsDelay` and `slotsSpinTime` are optional parameters you can use to customize the slots’ spin time and the delay between slots full stop.
 
 `slotsDelay` sets the time between the full stop of a wheel and the following ones in milliseconds.
 If you set `slotsDelay` to `1000` the second wheel will stop about a second after the first one, the third wheel will stop about a second after the second one, an so on.
-The default value is `NaN`.
+The default value is `NaN` (it means that there is not fixed delay between wheels).
 
 `slotsSpinTime` sets the minimum time for a wheel to reach the maximum speed before it starts to slow down, in milliseconds.
 If you set `slotsSpinTime` to `2000` every wheel will reach the maximum rotation speed in about 2 seconds, then will start to slow down after the proper `slotsDelay` time.
-The default value is `2000`.
+The default value is `1000`.
 
 I said “about” because the times are a little randomised to guarantee a very randomic slot machine behavior.
 
